@@ -1,0 +1,39 @@
+{% extends 'base_dashboard.html' %}
+
+{% block title %}
+My Claimed Items
+{% endblock %}
+
+{% block content %}
+    <h1 class="text-center">My Claimed Items</h1>
+    <table class="table table-responsive table-bordered table-hover mt-4">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Item Name</th>
+                <th>Item Image</th>
+                <th>Category</th>
+                <th>Date Claimed</th>
+                <th>Location Found</th>
+                <th>Status</th>
+                <th>Operations</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in claimed_items %}
+            <tr>
+                <td>{{ item.id }}</td>
+                <td>{{ item.name }}</td>
+                <td><img src="{{ url_for('static', filename='uploads/found_items/' + item.images[0].url.split('/')[-1]) }}" class="img-thumbnail" alt="{{ item.name }}" style="max-width: 150px;"></td>
+                <td>{{ item.category }}</td>
+                <td>{{ item.date_claimed }}</td>
+                <td>{{ item.location_found }}</td>
+                <td>{{ "Claimed" if item.is_claimed else 'Unclaimed' }}</td>
+                <td>
+                    <a href="{{ url_for('found_items.found_item_details_page', item_id=item.id) }}" class="btn btn-info btn-sm">View Item</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

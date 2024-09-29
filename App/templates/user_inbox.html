@@ -1,0 +1,44 @@
+{% extends 'base_dashboard.html' %}
+
+{% block title %}Inbox{% endblock %}
+
+{% block content %}
+    <div class="table-responsive mt-4">
+                    <h1 class="text-center">Inbox</h1>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">Sender</th>
+                                <th scope="col">Receiver</th>
+                                <th scope="col">Message Preview</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Action</th>
+                                <th scope="col">Item Image</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for conversation in conversations %}
+                                <td>{{ conversation['latest_message'].sender.firstname }} {{ conversation['latest_message'].sender.lastname }}</td>
+                                <td>{{ conversation['latest_message'].receiver.firstname }} {{ conversation['latest_message'].receiver.lastname }}</td>
+                                <td>{{ conversation['latest_message'].message[:50] }}...
+                                {% if conversation['latest_message'].is_read == False and conversation['latest_message'].receiver_id == current_user.id %}
+                                    <span class="mx-2 badge bg-danger">new</span>
+                                {% endif %}
+                                </td>
+                                <td>{{ conversation['latest_message'].timestamp.strftime('%d-%m-%Y %H:%M') }}</td>
+                                <td>
+                                    <a href="{{ url_for('dashboard.view_message', item_id=conversation['item_id'], item_type=conversation['item_type']) }}" class="btn btn-info btn-sm">View Conversation</a>
+                                </td>
+                                <td>
+                                {% if conversation.item_type == 'found' %}
+                                <img src="{{ url_for('static', filename='uploads/found_items/' + conversation.item.images[0].url.split('/')[-1]) }}" class="img-thumbnail" alt="{{ conversation.item.name }}" style="width: 40px; height: 40px;">
+                                {% else %}
+                                <img src="{{ url_for('static', filename='uploads/lost_items/' + conversation.item.images[0].url.split('/')[-1]) }}" class="img-thumbnail" alt="{{ conversation.item.name }}" style="width: 40px; height: 40px;">
+                                {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+    </div>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Edit Announcement{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h1>Edit Announcement</h1>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+
+        <div class="form-group mt-3">
+            {{ form.title.label(class="form-label") }}
+            {{ form.title(class="form-control", value=form.title.data) }}
+        </div>
+
+        <div class="form-group mt-3">
+            {{ form.content.label(class="form-label") }}
+            <div id="editor" style="height: 400px;"></div> <!-- Rich text editor -->
+            <input type="hidden" name="content" id="content">
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-4">Save Changes</button>
+        <a href="{{ url_for('announcements.announcement_detail', announcement_id=announcement.id) }}" class="btn btn-secondary mt-4">Cancel</a>
+    </form>
+</div>
+
+<!-- This is the Quill rich text editor -->
+<script src="https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.snow.css" rel="stylesheet">
+<script>
+    var quill = new Quill('#editor', {
+        theme: 'snow',
+        modules: {
+            toolbar: [
+                ['bold', 'italic', 'underline', 'strike'],
+                ['blockquote', 'code-block'],
+                [{ 'header': 1 }, { 'header': 2 }],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                [{ 'script': 'sub'}, { 'script': 'super' }],
+                [{ 'indent': '-1'}, { 'indent': '+1' }],
+                [{ 'direction': 'rtl' }],
+                [{ 'size': ['small', false, 'large', 'huge'] }],
+                [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                [{ 'color': [] }, { 'background': [] }],
+                [{ 'font': [] }],
+                [{ 'align': [] }],
+                ['clean'],
+                ['link', 'image']
+            ]
+        }
+    });
+
+    var content = {{ form.content.data | tojson | safe }};
+    quill.clipboard.dangerouslyPasteHTML(content);
+
+    document.querySelector('form').onsubmit = function() {
+        document.querySelector('input[name=content]').value = quill.root.innerHTML;
+    };
+</script>
+{% endblock %}

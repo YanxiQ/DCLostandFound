@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Admin Edit Lost Item
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h2>Admin Edit Lost Item</h2>
+        <form method="POST" action="{{ url_for('admin.edit_lost_item', item_id=item.id) }}" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.name.label(class="form-control-label") }}
+                {{ form.name(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.description.label(class="form-control-label") }}
+                {{ form.description(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.category.label(class="form-control-label") }}
+                {{ form.category(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.brand.label(class="form-control-label") }}
+                {{ form.brand(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.colour.label(class="form-control-label") }}
+                {{ form.colour(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.additional_info.label(class="form-control-label") }}
+                {{ form.additional_info(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.date_lost.label(class="form-control-label") }}
+                {{ form.date_lost(class="form-control", type="date") }}
+            </div>
+            <div class="form-group">
+                {{ form.location_lost.label(class="form-control-label") }}
+                {{ form.location_lost(class="form-control") }}
+            </div>
+            <button type="submit" class="btn btn-primary">Confirm Edit</button>
+        </form>
+    </div>
+{% endblock %}

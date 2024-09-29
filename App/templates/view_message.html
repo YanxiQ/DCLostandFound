@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}
+<title>View Message</title>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-3 mt-5">
+            <ul class="list-group">
+                <li class="list-group-item"><a href="{{ url_for('dashboard.user_dashboard_profile') }}">Personal Profile</a></li>
+                <li class="list-group-item"><a href="#">Items Claimed</a></li>
+                <li class="list-group-item"><a href="#">Item Reports</a></li>
+                <li class="list-group-item"><a href="{{ url_for('dashboard.inbox') }}">Inbox</a></li>
+                <li class="list-group-item"><a href="#">Notifications</a></li>
+                <li class="list-group-item"><a href="#">Settings</a></li>
+                <li class="list-group-item"><a href="{{ url_for('user.logout') }}">Logout</a></li>
+            </ul>
+        </div>
+        <div class="col-md-9">
+            <h1 class="text-center">View Message</h1>
+
+            <div class="card mb-4">
+                <div class="card-body text-center">
+                    {% if item_type == 'found' %}
+                    <img src="{{ url_for('static', filename='uploads/found_items/' + related_item.images[0].url.split('/')[-1]) }}" class="img-thumbnail" alt="{{ related_item.name }}" style="max-width: 150px;">
+                    {% else %}
+                    <img src="{{ url_for('static', filename='uploads/lost_items/' + related_item.images[0].url.split('/')[-1]) }}" class="img-thumbnail" alt="{{ related_item.name }}" style="max-width: 150px;">
+                    {% endif %}
+                    <h5 class="card-title mt-2">{{ related_item.name }}</h5>
+                    <p class="card-text">
+                        {% if related_item.is_claimed %}
+                            Claimed by: {{ related_item.claimed_by.firstname }} {{ related_item.claimed_by.lastname }}
+                        {% else %}
+                            {% if item_type == 'found' %}
+                            Found by: {{ related_item.found_by.firstname }} {{ related_item.found_by.lastname }}
+                            {% else %}
+                            Lost by: {{ related_item.lost_by.firstname }} {{ related_item.lost_by.lastname }}
+                            {% endif %}
+                        {% endif %}
+                    </p>
+                    {% if item_type == 'found' %}
+                    <a href="{{ url_for('found_items.found_item_details_page', item_id=related_item.id) }}" class="btn btn-info btn-sm">View Item</a>
+                    {% else %}
+                    <a href="{{ url_for('lost_items.lost_item_details_page', item_id=related_item.id) }}" class="btn btn-info btn-sm">View Item</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <h3>Communications</h3>
+            <div class="communications mt-4">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Sender</th>
+                            <th>Receiver</th>
+                            <th>Message</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for msg in all_messages %}
+                        <tr>
+                            <td>{{ msg.sender.firstname }} {{ msg.sender.lastname }}</td>
+                            <td>{{ msg.receiver.firstname }} {{ msg.receiver.lastname }}</td>
+                            <td>{{ msg.message }}</td>
+                            <td>{{ msg.timestamp.strftime('%d-%m-%Y %H:%M') }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Form to send reply -->
+            <form method="POST" action="{{ url_for('dashboard.view_message', item_id=related_item.id, item_type=item_type) }}">
+                <div class="form-group">
+                    <label for="replyMessage">Reply:</label>
+                    <textarea class="form-control" id="replyMessage" name="message" rows="3" required></textarea>
+                    <input type="hidden" name="receiver_id" value="{{ all_messages[-1].sender_id if all_messages[-1].receiver_id == current_user.id else all_messages[-1].receiver_id }}">
+                </div>
+                <button type="submit" class="btn btn-primary">Send Reply</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

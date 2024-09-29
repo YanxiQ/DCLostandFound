@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Item Details
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h2 class="text-center">Found Item Details</h2>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-4 h-100">
+                    <div class="image-container" style="height: 450px; display: flex; align-items: center; justify-content: center; overflow: hidden">
+                        {% if item.images %}
+                            <img id="main_image" src="{{ url_for('static', filename='uploads/found_items/' + item.images[0].url.split('/')[-1]) }}" class='card-img-top img-thumbnail' alt="{{ item.name }}" style="max-height: 100%;">
+                        {% else %}
+                            <img id="main_image" src="{{ url_for('static', filename='default_image.png') }}" class='card-img-top img-thumbnail' alt="{{ item.name }}" style="max-height: 100%;">
+                        {% endif %}
+                    </div>
+                    <div class="text-center mt-2">
+                        {% for image in item.images %}
+                            <button type="button" class="btn btn-sm btn-secondary" onclick="document.getElementById('main_image').src='{{ url_for('static', filename='uploads/found_items/' + image.url.split('/')[-1]) }}'">{{ loop.index }}</button>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card mb-4 h-100">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4"><u>{{ item.name }}</u></h5>
+                        <p class="card-text"><strong>Posted By:</strong> {{ item.found_by.firstname }} {{ item.found_by.lastname }}</p>
+                        <p class="card-text"><strong>Description:</strong> {{ item.description }}</p>
+                        <p class="card-text"><strong>Category:</strong> {{ item.category }}</p>
+                        <p class="card-text"><strong>Brand:</strong> {{ item.brand }}</p>
+                        <p class="card-text"><strong>Colour:</strong> {{ item.colour }}</p>
+                        <p class="card-text"><strong>Location Found:</strong> {{ item.location_found }}</p>
+                        <p class="card-text"><strong>Date Found:</strong> {{ item.date_found }}</p>
+                        <p class="card-text"><strong>Claim Status: </strong>
+                            {% if item.is_claimed %}
+                                Claimed by {{ item.claimed_by.firstname }} {{ item.claimed_by.lastname }}
+                            {% else %}
+                                Unclaimed
+                            {% endif %}
+                        </p>
+
+                        {% if item.is_claimed %}
+                                {% if current_user.id == item.claimed_by.id %}
+                                    <form method="POST" action="{{ url_for('found_items.reverse_claim_item', item_id=item.id) }}" class="d-inline">
+                                        <button type="submit" class="btn btn-warning">Reverse Claim</button>
+                                    </form>
+                                {% endif %}
+                        {% else %}
+                            {% if current_user.is_authenticated and current_user.id != item.found_by.id %}
+                                <form method="POST" action="{{ url_for('found_items.claim_item', item_id=item.id) }}" class="d-inline">
+                                    <div class="form-group">
+                                        <label for="message">Message:</label>
+                                        <textarea class="form-control" id="message" name="message" rows="3" required></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-success">Claim</button>
+                                </form>
+                            {% endif %}
+                        {% endif %}
+
+                        {% if current_user.id == item.found_by.id or current_user.is_admin %}
+                            <a href="{{ url_for('found_items.edit_item', item_id=item.id) }}" class="btn btn-warning">Edit</a>
+                            <form method="POST" action="{{ url_for('found_items.delete_item', item_id=item.id) }}" class="d-inline">
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                        {% endif %}
+                        <a href="{{ url_for('found_items.found_items_gallery_page') }}" class="btn btn-secondary">Back to Gallery</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Additional Information</h5>
+                <p>{{ item.additional_info }}</p>
+            </div>
+        </div>
+
+        <div class="container">
+                    <div class="card mb-4 h-100">
+                        <div class="communications mt-4">
+                            <h4 class="text-center">Messages</h4>
+                            <div class="messages-container mb-4">
+                                {% for communication in item.communications %}
+
+                                <div class="message {% if communication.sender_id == current_user.id %}sent{% else %}received{% endif %} mb-4 mx-4">
+                                    <div class="message-header">
+                                        {% if communication.sender_id != current_user.id %}
+                                        <strong><a href="javascript:void(0);" onclick="mentionUser('{{ communication.sender.firstname }} {{ communication.sender.lastname }}')">{{ communication.sender.firstname }} {{ communication.sender.lastname }}</a></strong>
+                                        <span class="message-date">{{ communication.timestamp.strftime('%d-%m-%Y %H:%M') }}</span>
+                                        {% else %}
+                                        <strong>{{ communication.sender.firstname }} {{ communication.sender.lastname }}</strong>
+                                        <span class="message-date">{{ communication.timestamp.strftime('%d-%m-%Y %H:%M') }}</span>
+                                        {% endif %}
+                                        {% if current_user.id == communication.sender.id or current_user.is_admin %}
+                                    <form method="POST" action="{{ url_for('found_items.delete_communication', communication_id=communication.id) }}" class="d-inline">
+                                        <button type="submit" class="btn btn-danger btn-sm btn-custom-small mx-2">Delete</button>
+                                    </form>
+                                    {% endif %}
+                                    </div>
+                                    <div class="message-body">
+                                        {{ communication.message }}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <form method="POST" action="{{ url_for('found_items.send_message', item_id=item.id) }}">
+                            <div class="form-group mx-4">
+                                <label for="messageText">Send a Message:</label>
+                                <textarea class="form-control" id="messageText" name="message" rows="3" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary my-4 mx-4">Submit</button>
+                        </form>
+                    </div>
+        </div>
+    </div>
+
+    <script>
+    function mentionUser(name) {
+        const messageInput = document.getElementById('messageText');
+
+        if (messageInput) {
+            const currentText = messageInput.value;
+            const mentionText = `@${name} `;
+            messageInput.value = currentText + mentionText;
+            messageInput.focus();
+        }
+    }
+    </script>
+{% endblock %}
+

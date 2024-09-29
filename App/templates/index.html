@@ -1,0 +1,133 @@
+{%  extends 'base.html' %}
+
+{% block title %}
+Home Page
+{% endblock %}
+
+{% block content %}
+    <section class="p-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md">
+                    <div class="card text-light" style="background-color: #032E47;">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Lost Items Gallery</h5>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                            <a href="{{ url_for('lost_items.lost_items_gallery_page') }}" class="btn btn-primary mt-2">See Lost Items</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md">
+                    <div class="card bg-secondary text-light">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Found Items Gallery</h5>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                            <a href="{{ url_for('found_items.found_items_gallery_page') }}" class="btn btn-primary mt-2">See Found Items</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md">
+                    <div class="card text-light" style="background-color: #032E47;">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Community Forum</h5>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                            <a href="#" class="btn btn-primary mt-2">See forums</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="p-5 text-light" style="background-color: #032E47;">
+        <div class="container">
+            <div class="row align-items-center justify-content-between">
+                <div class="col">
+                    <img src="../static/img/system_pics/dc-cblock.webp" alt="1" class="img-fluid">
+                </div>
+                <div class="col-md p-5">
+                    <h2>About Us</h2>
+                    <p class="lead">
+                        We are dedicated to helping the students of Dubai College recover their lost items efficiently and reliably.
+                    </p>
+                    <p class="lead">
+                        Join us in making Dubai College a more connected and caring community.
+                    </p>
+                    <a href="{{ url_for('main.about_page') }}" class="btn btn-light">See more</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="p-5">
+{#        <div class="container">#}
+{#            <div class="row align-items-center justify-content-between">#}
+{#                <div class="col-md p-5">#}
+{#                    <h2>Announcements</h2>#}
+{#                    <p class="lead">#}
+{#                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid consectetur, corporis dignissimos doloribus ea eius ex ipsa, itaque iusto neque nesciunt nihil officia pariatur perferendis placeat quam repellendus reprehenderit sunt?#}
+{#                    </p>#}
+{#                    <p class="lead">#}
+{#                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab accusantium ad aliquid animi aperiam, atque corporis debitis deleniti et laudantium minus natus quod repudiandae sed tempora ullam ut velit, veritatis?#}
+{#                    </p>#}
+{#                    <a href="" class="btn btn-light">See more</a>#}
+{#                </div>#}
+{#                <div class="col">#}
+{#                    <img src="../static/img/system_pics/Dubai-College-GAJ.jpg" alt="1" class="img-fluid">#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#        <section class="content-section bg-white">#}
+              <div class="container">
+                <div class="row">
+                  <div class="col-md-6">
+                    <h2>Latest Announcements</h2>
+                    <ul class="list-group mt-5">
+                      {% for announcement in announcements %}
+{#                      <li>#}
+                        <h5>{{ announcement.title }}</h5>
+                        <p>{{ announcement.content[:200] | safe | replace('\n', '<br>')}}{% if announcement.content|length > 200 %}...{% endif %} <a href="{{ url_for('announcements.announcement_detail', announcement_id=announcement.id) }}">Read more</a></p>
+{#                      </li>#}
+                      {% endfor %}
+                    </ul>
+                    <a href="{{ url_for('announcements.announcement_list') }}" class="btn btn-primary mt-3">View All Announcements</a>
+                  </div>
+                  <div class="col-md-6">
+                    <img src="../static/img/system_pics/Dubai-College-GAJ.jpg" alt="1" class="img-fluid">
+                  </div>
+                </div>
+              </div>
+        </section>
+
+{##}
+{#        <section class="content-section bg-light-grey">#}
+{#          <div class="container">#}
+{#            <h2 class="text-center">What We Are Doing</h2>#}
+{#            <div class="row">#}
+{#              <div class="col-md-4">#}
+{#                <div class="card">#}
+{#                  <div class="card-body">#}
+{#                    <p class="card-text">"Our primary mission is to create a reliable platform where individuals can report and recover lost items throughout Dubai City, ensuring a seamless and user-friendly experience for all."</p>#}
+{#      #}
+{#                  </div>#}
+{#                </div>#}
+{#              </div>#}
+{#              <div class="col-md-4">#}
+{#                <div class="card">#}
+{#                  <div class="card-body">#}
+{#                    <p class="card-text">"We aim to enhance community connections by providing a central hub where lost and found items can be easily documented, searched, and claimed, reducing the time and stress associated with lost belongings."</p>#}
+{#      #}
+{#                  </div>#}
+{#                </div>#}
+{#              </div>#}
+{#              <div class="col-md-4">#}
+{#                <div class="card">#}
+{#                  <div class="card-body">#}
+{#                    <p class="card-text">"Our goal is to integrate advanced technology to accurately track and manage lost items, ensuring that they are returned to their rightful owners as efficiently as possible."</p>#}
+        {#            <footer class="blockquote-footer"></footer>#}
+{#                  </div>#}
+{#                </div>#}
+{#              </div>#}
+{#            </div>#}
+{#          </div>#}
+{#        </section>#}
+
+{% endblock %}

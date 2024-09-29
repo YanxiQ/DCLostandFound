@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}{{ announcement.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>{{ announcement.title }}</h1>
+    <p class="text-muted">Posted by: {{ announcement.author.firstname }} {{ announcement.author.lastname }} on {{ announcement.date_posted.strftime('%Y-%m-%d') }}</p>
+    <div class="mt-2">
+                <a href="{{ url_for('announcements.edit_announcement', announcement_id=announcement.id) }}" class="btn btn-sm btn-warning">Edit</a>
+                <form action="{{ url_for('announcements.delete_announcement', announcement_id=announcement.id) }}" method="POST" class="d-inline">
+                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                </form>
+    </div>
+    <hr>
+    <p>{{ announcement.content | safe }}</p>
+    <a href="{{ url_for('announcements.announcement_list') }}" class="btn btn-secondary mt-4">Back to Announcements</a>
+</div>
+{% endblock %}

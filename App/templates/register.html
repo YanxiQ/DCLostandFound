@@ -1,0 +1,62 @@
+{% extends 'base2.html' %}
+
+{% block title %}
+Select Registration Type
+{% endblock %}
+
+{% block content %}
+    <div class = 'container text-center mt-5 align-items-center justify-content-center d-flex'>
+        <div class="card p-4 my-2" style="max-width: 400px; width: 100%;"  style="margin-top: 300px;">
+            <h2>Select Your Role</h2>
+            <p>Please choose whether you are registering as a student or a parent. Admins can directly login through the login page.</p>
+
+        <button onclick="window.location.href='{{ url_for('user.register_student') }}'" class="btn btn-custom btn-student">
+                Register as Student
+            </button>
+
+        <button onclick="window.location.href='{{ url_for('user.register_parent') }}'" class="btn btn-custom btn-parent">
+                Register as Parent
+            </button>
+        </div>
+    </div>
+
+    <style>
+    body {
+        background-image: url("{{ url_for('static', filename='img/system_pics/dubaicollege_cover.jpeg') }}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        height: 100vh;
+    }
+        .btn-custom {
+            font-size: 18px;
+            padding: 15px 30px;
+            margin: 10px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .btn-student {
+            background-color: #4CAF50; /* Green */
+            color: white;
+        }
+
+        .btn-student:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+
+        .btn-parent {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        .btn-parent:hover {
+            background-color: #1e88e5;
+            transform: scale(1.05);
+        }
+
+</style>
+{% endblock %}

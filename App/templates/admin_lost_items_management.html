@@ -1,0 +1,65 @@
+{% extends 'base_dashboard_admin.html' %}
+
+{% block title %}
+    Admin Lost Items Management
+{% endblock %}
+
+{% block content %}
+    <h1 class="text-center">Lost Items Management</h1>
+    <table class="table table-responsive table-bordered table-hover mt-4">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Item Name</th>
+                <th>Item Image</th>
+                <th>Item Category</th>
+                <th>Lost By</th>
+                <th>Found By</th>
+                <th>Date Lost</th>
+                <th>Location Lost</th>
+                <th>Status</th>
+                <th>Operations</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.id }}</td>
+                <td>{{ item.name }}</td>
+                <td>{% if item.images %}
+                    <img src="{{ url_for('static', filename='uploads/lost_items/' + item.images[0].url.split('/')[-1]) }}" class="img-thumbnail" alt="{{ item.name }}" style="max-width: 150px;">
+                    {% else %}
+                    Not Available
+                    {% endif %}
+                </td>
+                <td>{{ item.category }}</td>
+                <td>{{ item.lost_by.firstname }} {{ item.lost_by.lastname }}</td>
+                <td>
+                    {% if item.is_found %}
+                    {{ item.found_by.firstname }} {{ item.found_by.lastname }}
+                    {% else %}
+                    N/A
+                    {% endif %}
+                </td>
+                <td>{{ item.date_lost.strftime('%Y-%m-%d') }}</td>
+                <td>{{ item.location_lost }}</td>
+                <td>{% if item.is_found %}
+                    <p class="text-success">Found</p>
+                    {% elif item.lost_by.is_active == False %}
+                    <p class="text-muted">Invalid</p>
+                    {% else %}
+                    <p class="text-danger">Not Found</p>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ url_for('lost_items.lost_item_details_page', item_id=item.id) }}" class="btn btn-info btn-sm">View Item</a>
+                    <a href="{{ url_for('admin.edit_lost_item', item_id=item.id) }}" class="btn btn-warning btn-sm">Edit</a>
+                    <form method="POST" action="{{ url_for('admin.delete_lost_item', item_id=item.id) }}" class="d-inline">
+                        <button type="submit" class="btn btn-danger btn-sm mt-2">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

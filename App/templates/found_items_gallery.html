@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Found Items Gallery
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container mt-4">
+    <div class="text-center">
+        <h1>Found Items Gallery</h1>
+        <h5 class="text-danger">Browse items that have been found and are waiting to be claimed.</h5>
+    </div>
+    <div class="text-right mb-3">
+        <a href='{{ url_for("found_items.found_item_report") }}' class="btn btn-warning">Report Found Item</a>
+    </div>
+
+
+
+    <form id="filter-form" method="GET" action="{{ url_for('found_items.found_items_gallery_page') }}">
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <input type="text" class="form-control" name="search" placeholder="Search" value="{{ request.args.get('search', '') }}" onchange="submitForm()">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </div>
+            <div class="col-md-2 ml-4">
+                <select class="form-control" name="filter_by" onchange="submitForm()">
+                    <option value="">Filter By (A-Z):</option>
+                    <option value="name" {% if request.args.get('filter_by') == 'name' %}selected{% endif %}>Item Name</option>
+                    <option value="location_found" {% if request.args.get('filter_by') == 'location_lost' %}selected{% endif %}>Location Lost</option>
+                    <option value="date_found" {% if request.args.get('filter_by') == 'date_lost' %}selected{% endif %}>Date Lost</option>
+                    <option value="brand" {% if request.args.get('filter_by') == 'brand' %}selected{% endif %}>Item's Brand</option>
+                    <option value="colour" {% if request.args.get('filter_by') == 'colour' %}selected{% endif %}>Item's Colour</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select class="form-control" name="sort_by" onchange="submitForm()">
+                    <option value="newest" {% if request.args.get('sort_by') == 'newest' %}selected{% endif %}>Newest</option>
+                    <option value="oldest" {% if request.args.get('sort_by') == 'oldest' %}selected{% endif %}>Oldest</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select class="form-control" name="state" onchange="submitForm()">
+                    <option value="unclaimed" {% if request.args.get('state') == 'unclaimed' %}selected{% endif %}>Unclaimed</option>
+                    <option value="claimed" {% if request.args.get('state') == 'claimed' %}selected{% endif %}>Claimed</option>
+                </select>
+            </div>
+        </div>
+    </form>
+
+    {% if request.args.get('search') or request.args.get('filter_by') or request.args.get('state') or request.args.get('sort_by') %}
+    <div class="mb-4">
+        <h5>Active Filters:</h5>
+        <div class="btn-group">
+            {% if request.args.get('search') %}
+            <button class="btn btn-secondary">
+                Search: {{ request.args.get('search') }}
+                <a href="{{ url_for('found_items.found_items_gallery_page', search='', filter_by=request.args.get('filter_by'), state=request.args.get('state'), sort_by=request.args.get('sort_by')) }}" class="text-light ml-2">&times;</a>
+            </button>
+            {% endif %}
+            {% if request.args.get('filter_by') %}
+            <button class="btn btn-secondary">
+                Filter By: {{ request.args.get('filter_by') }}
+                <a href="{{ url_for('found_items.found_items_gallery_page', search=request.args.get('search'), filter_by='', state=request.args.get('state'), sort_by=request.args.get('sort_by')) }}" class="text-light ml-2">&times;</a>
+            </button>
+            {% endif %}
+            {% if request.args.get('state') %}
+            <button class="btn btn-secondary">
+                State: {{ request.args.get('state') }}
+                <a href="{{ url_for('found_items.found_items_gallery_page', search=request.args.get('search'), filter_by=request.args.get('filter_by'), state='', sort_by=request.args.get('sort_by')) }}" class="text-light ml-2">&times;</a>
+            </button>
+            {% endif %}
+            {% if request.args.get('sort_by') %}
+            <button class="btn btn-secondary">
+                Sort By: {{ request.args.get('sort_by') }}
+                <a href="{{ url_for('found_items.found_items_gallery_page', search=request.args.get('search'), filter_by=request.args.get('filter_by'), state=request.args.get('state'), sort_by='') }}" class="text-light ml-2">&times;</a>
+            </button>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row mt-4">
+        {% for item in items %}
+        <div class="col-md-4 col-sm-6 mb-4">
+            <div class="card">
+                <div class="fixed-size-image-box">
+                    {% if item.images %}
+                        <img src="{{ url_for('static', filename='uploads/found_items/' + item.images[0].url.split('/')[-1]) }}" class="card-img-top" alt="{{ item.name }}">
+                    {% else %}
+                        <!-- Placeholder image if no image is available -->
+                        <img src="{{ url_for('static', filename='path/to/placeholder_image.png') }}" class="card-img-top" alt="No image available">
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ item.name }}</h5>
+                    <p class="card-text">{{ item.description }}</p>
+                    <p class="card-text"><small class="text-muted">Item ID: {{ item.id }}</small></p>
+                    <p class="card-text"><small class="text-muted">Category: {{ item.category }}</small></p>
+                    <p class="card-text"><small class="text-muted">Brand: {{ item.brand }}</small></p>
+                    <p class="card-text"><small class="text-muted">Primary Colour: {{ item.colour }}</small></p>
+                    <p class="card-text"><small class="text-muted">Location Found: {{ item.location_found }}</small></p>
+                    <p class="card-text"><small class="text-muted">Date found: {{ item.date_found.strftime('%Y-%m-%d') }}</small></p>
+                    <a href="{{ url_for('found_items.found_item_details_page', item_id=item.id)}}" class="btn btn-info">View Details</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="row my-4">
+        <div class="col col-md-2">
+            <select class="form-control" id="itemsPerPage" onchange="changePerPage(this.value);">
+                <option value="9" {% if per_page == 9 %}selected{% endif %}>9 per page</option>
+                <option value="18" {% if per_page == 18 %}selected{% endif %}>18 per page</option>
+                <option value="27" {% if per_page == 27 %}selected{% endif %}>27 per page</option>
+            </select>
+        </div>
+        <div class="col">
+            <nav>
+                <ul class="pagination justify-content-center">
+                    {% for page_num in pagination.iter_pages() %}
+                    {% if page_num %}
+                    <li class="page-item {% if page_num == pagination.page %}active{% endif %}">
+                        <a class="page-link"
+                           href="{{ url_for('found_items.found_items_gallery_page', page=page_num, search=request.args.get('search'), filter_by=request.args.get('filter_by'), state=request.args.get('state'), sort_by=request.args.get('sort_by'), per_page=request.args.get('per_page', per_page)) }}">
+                           {{ page_num }}
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled"><span class="page-link">…</span></li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+</div>
+
+<style>
+.fixed-size-image-box {
+    height: 300px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.fixed-size-image-box img {
+    height: 100%;
+    object-fit: contain;
+}
+
+.card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 5px rgba(0, 0, 0, 0.2);
+}
+
+</style>
+<script>
+function submitForm() {
+    document.getElementById('filter-form').submit();
+}
+
+function changePerPage(perPage) {
+    const searchParams = new URLSearchParams(window.location.search);
+    searchParams.set('per_page', perPage);
+    searchParams.set('page', 1)
+    window.location.href = "{{ url_for('found_items.found_items_gallery_page') }}" + "?" + searchParams.toString();
+}
+</script>
+{% endblock %}

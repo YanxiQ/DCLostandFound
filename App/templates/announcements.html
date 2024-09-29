@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Announcements{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Announcements</h1>
+    <div class="d-flex justify-content-end mb-4">
+        <a href="{{ url_for('announcements.create_announcement') }}" class="btn btn-primary">Create Announcement</a>
+    </div>
+    <div class="list-group">
+        {% for announcement in announcements %}
+        <div class="list-group-item">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1"><a href="{{ url_for('announcements.announcement_detail', announcement_id=announcement.id) }}">{{ announcement.title }}</a></h5>
+                <small>{{ announcement.date_posted.strftime('%Y-%m-%d') }}</small>
+            </div>
+            <p class="mb-1">{{ announcement.content[:100] | safe }}...</p>
+            <small>Posted by: {{ announcement.author.firstname }} {{ announcement.author.lastname }}</small>
+
+            <div class="mt-2 d-flex justify-content-between">
+                <div>
+                    {% if current_user.id == announcement.user_id %}
+                    <a href="{{ url_for('announcements.edit_announcement', announcement_id=announcement.id) }}" class="btn btn-sm btn-warning">Edit</a>
+                    <form action="{{ url_for('announcements.delete_announcement', announcement_id=announcement.id) }}" method="POST" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <a href="{{ url_for('announcements.announcement_detail', announcement_id=announcement.id) }}" class="btn btn-outline-primary btn-sm">View Details</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

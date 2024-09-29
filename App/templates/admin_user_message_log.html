@@ -1,0 +1,45 @@
+{% extends 'base_dashboard_admin.html' %}
+
+{% block title %}
+    User Message Log
+{% endblock %}
+
+{% block content %}
+    <div class="table-responsive mt-4">
+                    <h1 class="text-center">User Message Log</h1>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">Item ID</th>
+                                <th scope="col">Item Image</th>
+                                <th scope="col">Sender</th>
+                                <th scope="col">Receiver</th>
+                                <th scope="col">Last Message Preview</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for conversation in conversations %}
+                                <td>{{ conversation.item_id }}</td>
+                                <td>
+                                {% if conversation.item_type == 'found' %}
+                                <img src="{{ url_for('static', filename='uploads/found_items/' + conversation.item.images[0].url.split('/')[-1]) }}" class="img-thumbnail" alt="{{ conversation.item.name }}" style="width: 40px; height: 40px;">
+                                {% else %}
+                                <img src="{{ url_for('static', filename='uploads/lost_items/' + conversation.item.images[0].url.split('/')[-1]) }}" class="img-thumbnail" alt="{{ conversation.item.name }}" style="width: 40px; height: 40px;">
+                                {% endif %}
+                                </td>
+                                <td>{{ conversation['latest_message'].sender.firstname }} {{ conversation['latest_message'].sender.lastname }}</td>
+                                <td>{{ conversation['latest_message'].receiver.firstname }} {{ conversation['latest_message'].receiver.lastname }}</td>
+                                <td>{{ conversation['latest_message'].message[:50] }}...
+                                </td>
+                                <td>{{ conversation['latest_message'].timestamp.strftime('%d-%m-%Y %H:%M') }}</td>
+                                <td>
+                                    <a href="{{ url_for('admin.admin_view_message', item_id=conversation['item_id'], item_type=conversation['item_type']) }}" class="btn btn-info btn-sm">View Conversation</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+    </div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}
+    About Us
+{% endblock %}
+
+{% block content %}
+
+    <header class="text-center p-5">
+        <div class="container">
+            <h1>About Us</h1>
+            <p>Welcome to the Dubai College Lost and Found, your dedicated platform for reuniting students, staff, and visitors with their lost belongings. At Dubai College, we understand how easy it can be to misplace items during a busy school day. Our goal is to make the recovery process simple and efficient for our community, ensuring lost items find their way back to their rightful owners.</p>
+        </div>
+    </header>
+    <section class="p-5">
+        <div class="container">
+            <div class="row align-items-center justify-content-between">
+                <div class="col-md p-5">
+                    <h2>Our Mission</h2>
+                    <p class="lead">
+                         Our mission is to foster a supportive and honest environment within the Dubai College community. By providing a secure and reliable lost and found service, we aim to minimize the stress of losing important items, from school materials to personal belongings. Through this platform, we encourage everyone to contribute to a responsible and caring school culture.
+                    </p>
+                    <p class="lead">
+                        Connecting people with their lost belongings across Dubai College.
+                    </p>
+                </div>
+                <div class="col">
+                    <img src="../static/img/system_pics/Dubai-College-GAJ.jpg" alt="1" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="team-section p-5 text-light" style="background-color: #032E47;">
+        <div class="container text-center">
+            <h2>Meet Our Team</h2>
+            <div class="row mt-5">
+                <div class="col-md-4">
+                    <img src="{{ url_for('static', filename='/img/profile_pics/yanxi_icon.JPG') }}" class="admin-icon" alt="Admin Icon">
+                    <h5 class="mt-3">Yanxi Qian</h5>
+                    <p>Project Developer</p>
+                </div>
+                <div class="col-md-4">
+                    <img src="{{ url_for('static', filename='/img/profile_pics/user_default-1.png') }}" class="admin-icon" alt="Admin Icon">
+                    <h5 class="mt-3">Open Position</h5>
+                    <p>System Administrator</p>
+                </div>
+                <div class="col-md-4">
+                    <img src="{{ url_for('static', filename='/img/profile_pics/user_default-3.png') }}" class="admin-icon" alt="Admin Icon">
+                    <h5 class="mt-3">Open Position</h5>
+                    <p>Support Specialist</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="container text-center p-5">
+            <h2>Contact Us</h2>
+            <p>If you have any inquiries regarding the website, feel free to contact us!</p>
+            <p><strong>Email:</strong> yanxi9059@dubaicollege.org </p>
+            <p><strong>Phone:</strong> (055) 456-7890</p>
+        </div>
+    </section>
+{% endblock %}

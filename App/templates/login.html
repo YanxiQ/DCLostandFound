@@ -1,0 +1,43 @@
+{% extends 'base2.html' %}
+
+{% block title %}
+    Login
+{% endblock %}
+
+{% block content %}
+<div class="container text-center align-items-center justify-content-center d-flex" style="margin-top: 100px;">
+    <div class="card p-4 my-2" style="max-width: 400px; width: 100%;">
+        <h2>Login</h2>
+        <p>Don't have an account?</p>
+        <a class="register-link"  href="{{ url_for("user.register") }}">Create one now!</a>
+        <form method="POST" action="{{ url_for('user.login') }}">
+            {{ form.hidden_tag() }}
+            <div class="form-group my-4">
+                {{ form.email.label(class='form-label') }}
+                {{ form.email(class='form-control') }}
+                {% for error in form.email.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="form-group my-4">
+                {{ form.password.label(class='form-label') }}
+                {{ form.password(class='form-control') }}
+                {% for error in form.password.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+        <button type="submit" class="btn btn-primary mb-2">Login</button>
+        </form>
+    </div>
+</div>
+
+    <style>
+    body {
+        background-image: url("{{ url_for('static', filename='img/system_pics/dubaicollege_cover.jpeg') }}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        height: 100vh;
+    }
+</style>
+{% endblock %}

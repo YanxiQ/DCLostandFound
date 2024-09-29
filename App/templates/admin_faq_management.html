@@ -1,0 +1,79 @@
+{% extends 'base_dashboard_admin.html' %}
+
+{% block title %}
+    Admin FAQ Management
+{% endblock %}
+
+{% block content %}
+    <h1 class="text-center">FAQ Management</h1>
+    <table class="table table-responsive table-bordered table-hover mt-4">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Question</th>
+                <th>Answer</th>
+{#                <th>Public?</th>#}
+                <th>Status</th>
+                <th>Operations</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for faq in faqs %}
+            <tr>
+                <td>{{ faq.id }}</td>
+                <td>{{ faq.question }}</td>
+                <td>
+                    {% if faq.is_answered %}
+                    {{ faq.answer }}
+                    {% endif %}
+                </td>
+{#                <td>{{ faq.is_public }}</td>#}
+                <td>
+                    {% if faq.is_answered %}
+                    <p class="text-success">Answered</p>
+                    {% else %}
+                    <p class="text-muted">Unanswered</p>
+                    {% endif %}
+                </td>
+                <td>
+                    <!-- Answer Button -->
+                    {% if not faq.is_answered %}
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#answerModal{{ faq.id }}">
+                        Answer
+                    </button>
+                    {% endif %}
+
+<!-- Answer Modal -->
+                    <div class="modal fade" id="answerModal{{ faq.id }}" tabindex="-1" aria-labelledby="answerModalLabel{{ faq.id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="answerModalLabel{{ faq.id }}">Answer FAQ: {{ faq.question }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="POST" action="{{ url_for('admin.faq_answer', faq_id=faq.id) }}">
+                                        {{ form.hidden_tag() }}
+                                        <div class="form-group">
+                                            <textarea name="answer" class="form-control" placeholder="Enter your answer here..."></textarea>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Submit Answer</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if faq.is_public == False %}
+                    <a href="{{ url_for('admin.faq_publish', faq_id=faq.id) }}" class="btn btn-info btn-sm">Publish</a>
+                    {% endif %}
+                    <a href="{{ url_for('admin.faq_delete', faq_id=faq.id) }}" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
