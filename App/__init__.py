@@ -1,4 +1,6 @@
 from flask import Flask
+
+from .config import Config
 from .exts import bcrypt, db
 from App.exts import init_ext
 from .views.found_items_view import found_items_bp
@@ -20,11 +22,13 @@ from .views.announce_view import *
 def create_app():
     app = Flask(__name__)
 
-    db_uri = 'mysql+pymysql://root:123456qian@localhost:3306/DCLostandFound'
-    app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['SECRET_KEY'] = 'joisdjfds8fsd8f'
-    app.config['UPLOADED_PHOTOS_DEST'] = 'uploads'
+    app.config.from_object(Config)
+
+    # db_uri = 'mysql+pymysql://root:123456qian@localhost:3306/DCLostandFound'
+    # app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
+    # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    # app.config['SECRET_KEY'] = 'joisdjfds8fsd8f'
+    # app.config['UPLOADED_PHOTOS_DEST'] = 'uploads'
 
     app.register_blueprint(main_bp)
     app.register_blueprint(found_items_bp,url_prefix='/found_items')
